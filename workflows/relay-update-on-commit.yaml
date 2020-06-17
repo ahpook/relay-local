@@ -1,3 +1,16 @@
+#   This workflow can be run from a github commit trigger
+#   set up on a workflow repo, to update workflows in the
+#   service whenever a PR is merged.
+#
+#   It makes some assumptions in the name of brevity,
+#   specifically:
+#   - the commit contains no more than one yaml file,
+#     which is the workflow to be updated
+#   - the workflow name on the service matches the filename,
+#     minus the .yaml extension
+#   - you've set up secrets with your login creds to relay
+#     itself.
+
 parameters:
   pr_target_branch:
     description: "branch target for the merged PR (default: master)"
@@ -25,7 +38,7 @@ steps:
   - name: update-workflow
     image: relaysh/core
     when:
-    - !Fn.equals [!Parameter pr-target-branch, "master"]
+    - !Fn.equals [!Parameter pr_target_branch, "master"]
     spec:
       pr_url: !Parameter pr_url
       repo_url: !Parameter repo_url
