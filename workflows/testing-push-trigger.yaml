@@ -1,0 +1,26 @@
+# This is a trivial example of the push events API
+# Use the auto-generated jwt for authentication
+# The POST payload of the message should just be
+# {"data": { "eventmessage": "Hi there" } }
+
+parameters:
+  message:
+    description: A string to display
+    default: Default message, override me
+
+triggers:
+  - name: my-push-trigger
+    source:
+      type: push
+      schema: {}
+    binding:
+      parameters:
+        message: !Data eventmessage
+
+steps:
+  - name: display-message
+    image: relaysh/core
+    spec:
+      message: !Parameter message
+    input:
+      - echo "My message was $(ni get {.message})"
