@@ -13,8 +13,8 @@
 
 parameters:
   pr_target_branch:
-    description: "branch target for the merged PR (default: master)"
-    default: master
+    description: "branch target for the merged PR (default: main)"
+    default: main
   pr_url:
     description: "the URL where relay should retrieve the updated workflow"
   repo_url:
@@ -38,7 +38,7 @@ steps:
   - name: update-workflow
     image: relaysh/core
     when:
-    - !Fn.equals [!Parameter pr_target_branch, "master"]
+    - !Fn.equals [!Parameter pr_target_branch, "main"]
     spec:
       pr_url: !Parameter pr_url
       repo_url: !Parameter repo_url
@@ -54,7 +54,7 @@ steps:
         cd $clonedir
         sha=$(curl -s $pr_url | jq -r '.head.sha')
         filename=$(git diff-tree -r --name-only --no-commit-id $sha | grep yaml | head -1)
-        if [[ -n $filename ]]
+        if [[ -n $filename ]]; then
           workflow=$(basename $filename .yaml)
           echo $(ni get -p {.relay.password}) | relay auth login $(ni get -p {.relay.username}) -p
           relay workflow replace $workflow -f $filename
