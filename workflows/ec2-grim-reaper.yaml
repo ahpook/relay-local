@@ -1,0 +1,57 @@
+# canonical version is at github.com/ahpook/relay-local
+apiVersion: v1
+description: Stop EC2 instances that are untagged
+
+# Uncomment out this trigger to run this workflow hourly.
+triggers:
+- name: ec2-push-trigger
+  source:
+    type: push
+  binding:
+    parameters:
+      region: us-east-1
+      dryRun: true
+- name: ec2-push-trigger-2
+  source:
+    type: push
+  binding:
+    parameters:
+      region: !Data region
+      dryRun: true
+
+parameters:
+  region:
+    description: The AWS region to run in
+    default: us-east-1
+  dryRun:
+    description: True if you don't want to perform actual WRITE operations
+    default: 'true'
+
+steps:
+- name: describe-instances
+  image: relaysh/aws-ec2-step-instances-describe
+  spec:
+    aws: &aws
+      connection: !Connection { type: aws, name: my-aws-account }
+      region: !Parameter region
+- name: filter-instances
+  image: relaysh/core:latest-python
+  spec:
+    instances: !Output {from: describe-instances, name: instances}
+  inputFile: https://raw.githubusercontent.com/puppetlabs/relay-workflows/master/ec2-stop-untagged-instances/filter-instances.py
+- name: approval
+  description: Wait for approval to stop instances 
+  type: approval
+  dependsOn: filter-instances
+  when: 
+    - !Fn.equals [!Parameter dryRun, 'false']
+- name: stop-instances
+  dependsOn: approval
+  image: relaysh/aws-ec2-step-instances-stop
+  when: 
+    - !Fn.equals [!Parameter dryRun, 'false']
+  spec:
+    aws: *aws
+    instanceIDs: !Output {from: filter-instances, name: instanceIDs}
+
+
