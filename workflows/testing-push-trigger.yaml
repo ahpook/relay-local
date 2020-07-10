@@ -6,7 +6,7 @@
 parameters:
   message:
     description: A string to display
-    default: Default message, override me
+    default: Default message, override me please
 
 triggers:
   - name: my-push-trigger
