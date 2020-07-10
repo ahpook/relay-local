@@ -17,7 +17,7 @@ description: Stop EC2 instances that are untagged
   binding:
     parameters:
       region: !Data region
-      dryRun: true
+      dryRun: !Data dryrun
 
 parameters:
   region:
