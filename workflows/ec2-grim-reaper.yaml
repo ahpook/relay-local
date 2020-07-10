@@ -3,14 +3,14 @@ apiVersion: v1
 description: Stop EC2 instances that are untagged
 
 triggers:
-# Uncomment this trigger to run this workflow hourly.
-#- name: ec2-push-trigger
-#  source:
-#    type: push
-#  binding:
-#    parameters:
-#      region: us-east-1
-#      dryRun: true
+# testing two triggers
+- name: ec2-push-trigger
+  source:
+    type: push
+  binding:
+    parameters:
+      region: us-east-1
+      dryRun: true
 - name: ec2-push-trigger-2
   source:
     type: push
