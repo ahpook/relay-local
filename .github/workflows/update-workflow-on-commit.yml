@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     # Runs a single command using the runners shell
-    - uses: ahpook/relaysh-docker-update-workflow
+    - uses: ahpook/relaysh-docker-update-workflow@master
       with:
          RELAY_USERNAME: ${{ secrets.RELAY_USERNAME }}
          RELAY_PASSWORD: ${{ secrets.RELAY_PASSWORD }}
