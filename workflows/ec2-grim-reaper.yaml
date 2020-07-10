@@ -3,7 +3,7 @@ apiVersion: v1
 description: Stop EC2 instances that are untagged
 
 triggers:
-# testing two triggers
+# testing two triggers at a time
 - name: ec2-push-trigger
   source:
     type: push
