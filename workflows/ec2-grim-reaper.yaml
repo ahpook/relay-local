@@ -1,4 +1,4 @@
-# canonical version is at github.com/ahpook/relay-local
+# canonical version is at github.com/ahpook/relay-local - update there!
 apiVersion: v1
 description: Stop EC2 instances that are untagged
 
