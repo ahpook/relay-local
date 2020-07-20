@@ -1,3 +1,5 @@
+# testing trigger to get the content of a github action into
+# the filesystem for a step
 parameters:
   event_payload:
     description: "The full json payload from the incoming github event"
