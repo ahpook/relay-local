@@ -6,7 +6,9 @@ PRs that merge workflows/*.yaml to the `main` branch are automatically synced
 to the service, so I can keep things in git without having to sync a bunch of
 files around.
 
-The Ourobouros workflow that makes this happen is itself stored in the repo
-at workflows/relay-update-on-commit.yaml. Feel free to use it if you want!
+This happens via github actions, which you can see in the [.github/workflows]
+directory. 
+
+There is an equivalent relay workflow in [workflows/relay-update-on-commit.yaml]
 
 ![Relay.sh](https://github.com/puppetlabs/relay/raw/master/docs/relay-logo.svg?sanitize=true)
