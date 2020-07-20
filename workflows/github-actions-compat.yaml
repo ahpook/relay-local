@@ -1,0 +1,23 @@
+parameters:
+  event_payload:
+    description: "The full json payload from the incoming github event"
+
+triggers:
+  - name: github-event
+    source:
+      type: webhook
+      image: relaysh/github-trigger-event-sink
+    binding:
+      parameters:
+        event_payload: !Data event_payload
+
+steps:
+  - name: dump-payload
+    image: relaysh/core
+    spec:
+      event_payload: !Parameter event_payload
+    input:
+      - mkdir -p /github/workflow
+      - ni get event_payload > /github/workflow/event.json
+      - jq . /github/workflow/event.json
+
