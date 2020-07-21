@@ -20,6 +20,6 @@ steps:
       event_payload: !Parameter event_payload
     input:
       - mkdir -p /github/workflow
-      - ni get | jq .event_payload > /github/workflow/event.json
+      - "ni get | jq .event_payload > /github/workflow/event.json"
       - cat /github/workflow/event.json
 
