@@ -1,0 +1,49 @@
+apiVersion: v1
+description: VictorOps x Relay demo
+# Parameters allow data to be passed in to a run execution. See https://relay.sh/docs/reference/relay-workflows/#parameters
+parameters:
+#  This should be supplied by a Secret because it has a key in the path
+#  endpoint_url:
+#    description: the base url to talk to, includes api key embedded in URL
+  routing_key:
+    description: The VictorOps Routing Key for this message
+  entity_id:
+    description: the internal ID of the incident to update
+  entity_display_name:
+    description: a short summary of the update
+    default: Update from a Relay workflow run
+  state_message:
+    description: the detailed context to include in the update
+    default: Relay ran a workflow and did some cool stuff
+  webhook_payload:
+    description: the entire content of the incoming webhook request to the trigger
+triggers:
+- name: victorops-webhook-trigger
+  source:
+    type: webhook
+    image: relaysh/victorops-trigger-incident-triggered
+    binding:
+      parameters:
+        webhook_payload: !Data webhook_payload
+        entity_id: !Data webhook_payload.entity_id
+        routing_key: "relay"
+        entity_display_name: !Data incident
+        state_message: !Data webhook_payload.state_message
+        
+    
+steps:
+- name: print-webhook
+  image: relaysh/core
+  spec:
+    webhook_payload: !Parameter webhook_payload
+    entity_display_name: !Parameter entity_display_name
+  input:
+  - echo "Params were payload $(ni get -p {.webhook_payload}), entity_display_name $(ni get -p {.entity_display_name})" 
+- name: emit-event
+  image: relaysh/victorops-step-incident-update
+  spec:
+    endpoint_url: !Secret endpoint_url
+    routing_key: !Parameter routing_key
+    entity_id: !Parameter entity_id
+    entity_display_name: !Parameter entity_display_name
+    state_message: !Fn.concat ["Update from relay on incident ", !Parameter entity_display_name]
